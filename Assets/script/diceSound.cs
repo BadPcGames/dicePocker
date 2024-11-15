@@ -14,10 +14,7 @@ public class diceSound : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (collision.gameObject.tag == "boardBotom")
-        //{
-            PlaySound(sounds[Random.Range(0,2)]);
-        //}
+        PlaySound(sounds[Random.Range(0,2)]);
     }
 
     public void playPickSound()

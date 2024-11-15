@@ -10,7 +10,7 @@ public class handManager : MonoBehaviour
     int handClass = -1;
     int hand1Combynation = -1;
     int hand2Combynation = -1;
-    int maxDiceWithoutCombination = -1;
+    List <int> maxDiceWithoutCombination = new List<int>();
 
     public List<int> getValues()
     {
@@ -28,7 +28,7 @@ public class handManager : MonoBehaviour
     {
         return hand2Combynation;
     }
-    public int getMaxDiceWithoutCombination()
+    public List<int> getMaxDiceWithoutCombination()
     {
         return maxDiceWithoutCombination;
     }
@@ -63,15 +63,20 @@ public class handManager : MonoBehaviour
 
     private void findCombination()
     {
-        int maxClass=-1; 
-        
-        for(int i=0;i<values.Count();i++)
+        int maxClass = -1;
+        hand1Combynation = -1;
+        int maxComb1 = 0;
+        int maxComb2 = 0;
+        hand2Combynation = -1;
+        maxDiceWithoutCombination = new List<int>();
+
+        for (int i = 0; i < values.Count(); i++)
         {
             if (values[i] == 5)
             {
                 maxClass = 7;
             }
-            else if ((values[i] == 4)&&maxClass<6)
+            else if ((values[i] == 4) && maxClass < 6)
             {
                 maxClass = 6;
             }
@@ -83,7 +88,7 @@ public class handManager : MonoBehaviour
             {
                 maxClass = 1;
             }
-            else if(maxClass<1)
+            else if (maxClass < 1)
             {
                 maxClass = 0;
             }
@@ -101,24 +106,51 @@ public class handManager : MonoBehaviour
         int trioCount = 0;
         for (int i = 0; i < values.Count(); i++)
         {
-            if(values[i] == 2) { pairCount++; }
-            if (values[i] == 3) { trioCount++;}
+            if (values[i] == 2) { pairCount++; }
+            if (values[i] == 3) { trioCount++; }
         }
 
         if (pairCount == 1 && trioCount == 1)
         {
-            if(maxClass<5)
-            maxClass = 5;
+            if (maxClass < 5)
+                maxClass = 5;
         }
 
         else if (pairCount == 2)
         {
-            if(maxClass<2)
-            maxClass = 2;
+            if (maxClass < 2)
+                maxClass = 2;
         }
 
-        handClass=maxClass;
-    }
+        for (int i = 0; i < values.Count; i++)
+        {
+            if (values[i] >= maxComb1)
+            {
+                maxComb2 = maxComb1;
+                hand2Combynation = hand1Combynation;
+                maxComb1 = values[i];
+                hand1Combynation = i + 1;
+            }
+        }
+
+        for(int i = 0; i < values.Count; i++)
+        {
+            if (values[i] != hand1Combynation || values[i] != hand2Combynation)
+            {
+                maxDiceWithoutCombination.Add(values[i]);
+            }
+        }
+        maxDiceWithoutCombination.Reverse();
+
+        Debug.Log("Max Comb 1 = " + maxComb1);
+        Debug.Log("Max Comb 2 = " + maxComb2);
+        Debug.Log("Comb 1 = " + hand1Combynation);
+        Debug.Log("Comb 2 = " + hand2Combynation);
+        Debug.Log("List = " + maxDiceWithoutCombination);
+
+        handClass = maxClass;
+    }  
+
 
     private bool CheckStraight()
     {

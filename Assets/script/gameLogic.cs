@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class gameLogic : MonoBehaviour
     private GameObject PlayerButton;
     [SerializeField]
     private GameObject ResultMenu;
+
+    public Rigidbody rb;
 
     private int move;
 
@@ -87,19 +90,68 @@ public class gameLogic : MonoBehaviour
     {
         int enemyHandClass=enemy.GetComponent<handManager>().getHandClass();
         int playerHandClass = player.GetComponent<handManager>().getHandClass();
-        if (playerHandClass > enemyHandClass)
+
+        if(player.GetComponent<handManager>().getValues()== enemy.GetComponent<handManager>().getValues())
         {
-           return "You Win";
-        }
-        else if(enemyHandClass > playerHandClass)
-        {
-            return "You Lose";
+            return "Draw";
         }
         else
         {
-            return "Idy Nahuy";
+            if (playerHandClass > enemyHandClass)
+            {
+                return "You Win";
+            }
+            else if (enemyHandClass > playerHandClass)
+            {
+                return "You Lose";
+            }
+            else 
+            {
+                int enemyHand1Combynation= enemy.GetComponent<handManager>().getHand1Combynation();
+                int playerHand1Combynation = player.GetComponent<handManager>().getHand1Combynation();
+
+                if (enemyHand1Combynation < playerHand1Combynation)
+                {
+                    return "You Win";
+                }
+                else if (enemyHand1Combynation > playerHand1Combynation)
+                {
+                    return "You Lose";
+                }
+                else
+                {
+                    int enemyHand2Combynation = enemy.GetComponent<handManager>().getHand2Combynation();
+                    int playerHand2Combynation = player.GetComponent<handManager>().getHand2Combynation();
+
+                    if (enemyHand2Combynation < playerHand2Combynation)
+                    {
+                        return "You Win";
+                    }
+                    else if (enemyHand2Combynation > playerHand2Combynation)
+                    {
+                        return "You Lose";
+                    }
+                    else
+                    {
+                        List<int> enemyMax = enemy.GetComponent<handManager>().getMaxDiceWithoutCombination();
+                        List<int> playerMax = player.GetComponent<handManager>().getMaxDiceWithoutCombination();
+
+                        for (int i = 0; i < enemyMax.Count; i++)
+                        {
+                            if (enemyMax[i] < playerMax[i])
+                            {
+                                return "You Win";
+                            }
+                            else if (enemyMax[i] > playerMax[i])
+                            {
+                                return "You Lose";
+                            }
+                        }
+                    }
+                }
+            }
         }
-       
+        return "Draw";
     }
 
 

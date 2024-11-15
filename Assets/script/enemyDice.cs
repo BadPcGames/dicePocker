@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class enemyDice : MonoBehaviour
@@ -64,37 +65,29 @@ public class enemyDice : MonoBehaviour
     public int findValue()
     {
         int value = -1;
-        Vector3 direction=gameObject.transform.eulerAngles;
+        Vector3 direction = gameObject.transform.eulerAngles;
 
-        direction = new Vector3(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), Mathf.RoundToInt(direction.z));
-        if(direction.x==180&&direction.y==270||
-            direction.x == 0 && direction.z == 90)
+        if (transform.GetComponent<Rigidbody>().angularVelocity == Vector3.zero)
         {
-            value = 1;
+            List<Transform> sides = new List<Transform>();
+            for (int i = 1; i < 7; i++)
+            {
+                sides.Add(transform.Find(i.ToString()));
+            }
+
+            Transform goalSide = sides[0];
+            for (int i = 1; i < 6; i++)
+            {
+                if (goalSide.transform.position.y < sides[i].transform.position.y)
+                {
+                    goalSide = sides[i];
+                }
+            }
+            value = goalSide.gameObject.GetComponent<diceValue>().getValue();
         }
-        else if (direction.x == 270)
-        {
-            value = 2;
-        }
-        else if (direction.x == 180 && direction.z == 0 ||
-           direction.x == 0 && direction.z == 180)
-        {
-            value = 3;
-        }
-        else if (direction.x == 180 && direction.z == 180 ||
-           direction.x == 0 && direction.z == 0)
-        {
-            value = 4;
-        }
-        else if (direction.x == 90)
-        {
-            value = 5;
-        }
-        else if (direction.x == 0 && direction.z == 270 ||
-           direction.x == 180 && direction.z == 90)
-        {
-            value = 6;
-        }
+
+
+
         return value;
     }
 }
