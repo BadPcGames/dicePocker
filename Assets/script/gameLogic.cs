@@ -1,74 +1,106 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class gameLogic : MonoBehaviour
 {
-    private int currentState;
+    [SerializeField]
+    private GameObject player;
+    [SerializeField]
+    private GameObject enemy;
+    [SerializeField]
+    private GameObject PlayerButton;
+    [SerializeField]
+    private GameObject ResultMenu;
 
-    void Start()
+    private int move;
+
+    private void Start()
     {
-        currentState = 0;  // Начинаем с хода игрока
-        StartPlayerTurn();
+        move = -1;
+        changeMove();
+        ResultMenu.SetActive(false);
     }
 
-    void Update()
+
+    private void SetPlayerTurn(bool firsMove)
     {
-        if (currentState == 0)
+        PlayerButton.SetActive(true);
+        if (firsMove)
         {
-            // Проверяем завершение хода игрока
-            if (Input.GetKeyDown(KeyCode.Space)) // Например, пробел завершает ход
+            GameObject[] dice = GameObject.FindGameObjectsWithTag("playerDice");
+            foreach (GameObject d in dice)
             {
-                EndPlayerTurn();
+                d.GetComponent<playerDice>().ChangeForStart();
             }
         }
-        else if (currentState == TurnState.EnemyTurn)
+        player.GetComponent<playerStats>().setCanChange(!firsMove);
+    }
+
+    private void SetEnemyTurn(bool firsMove)
+    {
+        player.GetComponent<playerStats>().setCanChange(false);
+        if (firsMove)
         {
-            // Пример простого AI, выполняющего ход
-            Debug.Log("Enemy is taking their turn...");
-            EndEnemyTurn();
+            enemy.GetComponent<enemyIntelect>().FirstMove();
         }
-        else if (currentState == TurnState.Result)
+        else
         {
-            // Обрабатываем результат после каждого цикла ходов
-            CheckGameResult();
+            enemy.GetComponent<enemyIntelect>().SecondMove();
+        }
+    
+    }
+
+    public void changeMove()
+    {
+        move++;
+        if(move>3)
+        {     
+            move= -1;
+            ResultMenu.SetActive(true);
+            Transform result = ResultMenu.transform.Find("result");
+            result.gameObject.GetComponent<Text>().text= findResult();
+        }
+        else
+        {
+            if (move == 0)
+            {
+                ResultMenu.SetActive(false);
+                SetPlayerTurn(true);
+            }
+            else if (move == 1)
+            {
+                SetEnemyTurn(true);
+            }
+            else if (move == 2)
+            {
+                SetPlayerTurn(false);
+            }
+            else if (move == 3)
+            {
+                SetEnemyTurn(false);
+            }
         }
     }
 
-    private void StartPlayerTurn()
+
+    private string findResult()
     {
-        Debug.Log("Player's Turn");
-        currentState = TurnState.PlayerTurn;
-        // Активируйте необходимые элементы управления для игрока
+        int enemyHandClass=enemy.GetComponent<handManager>().getHandClass();
+        int playerHandClass = player.GetComponent<handManager>().getHandClass();
+        if (playerHandClass > enemyHandClass)
+        {
+           return "You Win";
+        }
+        else if(enemyHandClass > playerHandClass)
+        {
+            return "You Lose";
+        }
+        else
+        {
+            return "Idy Nahuy";
+        }
+       
     }
 
-    private void EndPlayerTurn()
-    {
-        Debug.Log("Player's Turn Ended");
-        currentState = TurnState.EnemyTurn;
-        StartEnemyTurn();
-    }
 
-    private void StartEnemyTurn()
-    {
-        Debug.Log("Enemy's Turn");
-        // Вы можете добавить паузу или анимацию перед ходом противника
-    }
-
-    private void EndEnemyTurn()
-    {
-        Debug.Log("Enemy's Turn Ended");
-        currentState = TurnState.Result;
-    }
-
-    private void CheckGameResult()
-    {
-        // Проверьте условие победы или поражения
-        Debug.Log("Checking Game Result...");
-
-        // Если игра продолжается:
-        currentState = TurnState.PlayerTurn;
-        StartPlayerTurn();
-
-        // Если игра окончена, можно перезапустить или завершить:
-        // Debug.Log("Game Over");
-    }
 }

@@ -8,11 +8,37 @@ public class handManager : MonoBehaviour
 {
     private List<int> values= new List<int> { 0,0,0,0,0,0};
     int handClass = -1;
+    int hand1Combynation = -1;
+    int hand2Combynation = -1;
+    int maxDiceWithoutCombination = -1;
 
+    public List<int> getValues()
+    {
+        return values;
+    }
+    public int getHandClass()
+    {
+        return handClass;
+    }
+    public int getHand1Combynation()
+    {
+        return hand1Combynation;
+    }
+    public int getHand2Combynation()
+    {
+        return hand2Combynation;
+    }
+    public int getMaxDiceWithoutCombination()
+    {
+        return maxDiceWithoutCombination;
+    }
 
     public void addValue(int value)
     {
-        values[value - 1]++;
+        if (value >= 1)
+        {
+            values[value - 1]++;
+        }
         int sum = 0;
         foreach(int i in values)
         {
@@ -22,6 +48,7 @@ public class handManager : MonoBehaviour
         {
             findCombination();
             Debug.Log(handClass);
+            GameObject.FindGameObjectWithTag("game").GetComponent<gameLogic>().changeMove();
         }
     }
 
@@ -36,24 +63,23 @@ public class handManager : MonoBehaviour
 
     private void findCombination()
     {
-        bool isStraight = CheckStraight();
         int maxClass=-1; 
         
-        foreach(int i in values)
+        for(int i=0;i<values.Count();i++)
         {
-            if (i == 5)
+            if (values[i] == 5)
             {
                 maxClass = 7;
             }
-            else if ((i == 4)&&maxClass<6)
+            else if ((values[i] == 4)&&maxClass<6)
             {
                 maxClass = 6;
             }
-            else if ((i == 3) && maxClass < 3)
+            else if ((values[i] == 3) && maxClass < 3)
             {
                 maxClass = 3;
             }
-            else if ((i == 2) && maxClass < 1)
+            else if ((values[i] == 2) && maxClass < 1)
             {
                 maxClass = 1;
             }
@@ -73,25 +99,24 @@ public class handManager : MonoBehaviour
 
         int pairCount = 0;
         int trioCount = 0;
-        foreach (int i in values)
+        for (int i = 0; i < values.Count(); i++)
         {
-            if(i==2) { pairCount++; }
-            if (i==3) { trioCount++;}
+            if(values[i] == 2) { pairCount++; }
+            if (values[i] == 3) { trioCount++;}
         }
+
         if (pairCount == 1 && trioCount == 1)
         {
             if(maxClass<5)
             maxClass = 5;
         }
+
         else if (pairCount == 2)
         {
             if(maxClass<2)
             maxClass = 2;
         }
 
-        
-    
-   
         handClass=maxClass;
     }
 

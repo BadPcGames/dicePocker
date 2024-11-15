@@ -6,24 +6,37 @@ public class enemyDice : MonoBehaviour
     private int value;
     private Vector3 stratPosition;
 
+    public int getValue()
+    {
+        return value;
+    }
 
     private void Start()
     {
         stratPosition = transform.position;
-        isSelected = true;
-        transform.position -= new Vector3(7, 0, 0);
     }
 
-
-   
+    public void Pick()
+    {
+        if (isSelected)
+        {
+            isSelected = false;
+            transform.position += new Vector3(0, 0, 3);
+        }
+        else
+        {
+            isSelected = true;
+            transform.position -= new Vector3(0, 0, 3);
+        }
+    }
 
     public void Throw()
     {
         if (isSelected)
         {
             GameObject.FindGameObjectWithTag("enemy").GetComponent<handManager>().removeValue(value);
-            transform.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-250, 250), Random.Range(100, 250), Random.Range(150, 350)));
-            transform.gameObject.GetComponent<Rigidbody>().AddTorque((new Vector3(Random.Range(-100f,200f), Random.Range(-100f, 200f),Random.Range(-100f, 200f))));
+            transform.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-250, 250), Random.Range(100, 250), Random.Range(-350, -150)));
+            transform.gameObject.GetComponent<Rigidbody>().AddTorque((new Vector3(Random.Range(-200f,100f), Random.Range(-200f, 100f),Random.Range(-200f, 100f))));
             Invoke("returnToStart", 3.5f);
         }   
     }
@@ -47,8 +60,6 @@ public class enemyDice : MonoBehaviour
             GameObject.FindGameObjectWithTag("enemy").GetComponent<handManager>().addValue(value);
         }
     }
-
-
 
     public int findValue()
     {
@@ -84,7 +95,6 @@ public class enemyDice : MonoBehaviour
         {
             value = 6;
         }
-
         return value;
     }
 }

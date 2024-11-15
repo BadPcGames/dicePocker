@@ -2,43 +2,52 @@ using UnityEngine;
 
 public class playerDice : MonoBehaviour
 {
-    private bool isSelected;
+    public  bool isSelected;
     private int value;
     private Vector3 stratPosition;
 
 
-    private void Start()
+    public void ChangeForStart()
     {
         stratPosition = transform.position;
-        isSelected = true;
-        transform.position += new Vector3(7, 0, 0);
+        isSelected = false;
+        Pick();
     }
 
 
     private void FixedUpdate()
     {
-        if (Input.GetMouseButtonDown(0)) 
+        if (GameObject.FindGameObjectWithTag("player").GetComponent<playerStats>().getCanChange())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (hit.transform == transform)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
                 {
-                    if (isSelected)
+                    if (hit.transform == transform)
                     {
-                        transform.position -= new Vector3(7, 0, 0); 
+                        Pick();
                     }
-                    else
-                    {
-                        transform.position += new Vector3(7, 0, 0);
-                    }
-                    isSelected=isSelected?false:true;
-                    
                 }
             }
         }
+    }
+
+    public void Pick()
+    {
+        if (isSelected)
+        {
+            transform.position -= new Vector3(0, 0, 3);
+            isSelected = false;
+        }
+        else
+        {
+            transform.position += new Vector3(0, 0, 3);
+            isSelected = true;
+        }
+        transform.gameObject.GetComponent<diceSound>().playPickSound();
     }
 
     public void Throw()

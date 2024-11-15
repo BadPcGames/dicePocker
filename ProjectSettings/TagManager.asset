@@ -8,6 +8,9 @@ TagManager:
   - player
   - playerDice
   - enemyDice
+  - game
+  - playerButton
+  - enemy
   layers:
   - Default
   - TransparentFX
