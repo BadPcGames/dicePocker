@@ -26,13 +26,13 @@ public class enemyIntelect : MonoBehaviour
         List<int> values=transform.GetComponent<handManager>().getValues();
         int handClass = transform.GetComponent<handManager>().getHandClass();
 
-        if (handClass == 7 || handClass == 5 | handClass == 4)
+        if (handClass == 7 || handClass == 5 || handClass == 4)
         {
             transform.GetComponent<handManager>().addValue(0);
         }
         else
         {
-            selectDiceForRolling(values);   
+            selectDiceForRolling(values);
         }
         foreach (GameObject item in dices)
         {

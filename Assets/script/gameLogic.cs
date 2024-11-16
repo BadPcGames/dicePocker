@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class gameLogic : MonoBehaviour
 {
@@ -13,7 +14,6 @@ public class gameLogic : MonoBehaviour
     [SerializeField]
     private GameObject ResultMenu;
 
-    public Rigidbody rb;
 
     private int move;
 
@@ -61,7 +61,7 @@ public class gameLogic : MonoBehaviour
             move= -1;
             ResultMenu.SetActive(true);
             Transform result = ResultMenu.transform.Find("result");
-            result.gameObject.GetComponent<Text>().text= findResult();
+            result.GetChild(0).GetComponent<TMP_Text>().text = findResult();
         }
         else
         {

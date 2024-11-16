@@ -6,7 +6,7 @@ public class diceSound : MonoBehaviour
 
     private AudioSource audioSource => GetComponent<AudioSource>();
 
-    public void PlaySound(AudioClip clip, float volume = 0.2f, bool destroyed = false, float p1 = 0.9f, float p2 = 1.1f)
+    public void PlaySound(AudioClip clip, float volume = 1f, bool destroyed = false, float p1 = 0.9f, float p2 = 1.1f)
     {
         audioSource.pitch = Random.Range(p1, p2);
         audioSource.PlayOneShot(clip, volume);

@@ -6,11 +6,17 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class handManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject result;
+    [SerializeField]
+    private Color32[] rairs;
+
     private List<int> values= new List<int> { 0,0,0,0,0,0};
     int handClass = -1;
     int hand1Combynation = -1;
     int hand2Combynation = -1;
     List <int> maxDiceWithoutCombination = new List<int>();
+
 
     public List<int> getValues()
     {
@@ -47,6 +53,35 @@ public class handManager : MonoBehaviour
         if (sum == 5)
         {
             findCombination();
+            string message= "";
+            switch (handClass)
+            {
+                case 0:
+                    message = "High Die";
+                    break;
+                case 1:
+                    message = "Pair";
+                    break;
+                case 2:
+                    message = "Two Pair";
+                    break;
+                case 3:
+                    message = "Set";
+                    break;
+                case 4:
+                    message = "Streat";
+                    break;
+                case 5:
+                    message = "Full House";
+                    break;
+                case 6:
+                    message = "Square";
+                    break;  
+                case 7:
+                    message = "Poker";
+                    break;
+            }
+            result.GetComponent<resultShow>().show(message, rairs[handClass]);
             Debug.Log(handClass);
             GameObject.FindGameObjectWithTag("game").GetComponent<gameLogic>().changeMove();
         }

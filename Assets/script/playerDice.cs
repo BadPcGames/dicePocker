@@ -18,23 +18,16 @@ public class playerDice : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
+    private void OnMouseDown()
+    {
+        tryPick();
+    }
+
+    public void tryPick()
     {
         if (GameObject.FindGameObjectWithTag("player").GetComponent<playerStats>().getCanChange())
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.transform == transform)
-                    {
-                        Pick();
-                    }
-                }
-            }
+            Pick();
         }
     }
 
@@ -58,17 +51,41 @@ public class playerDice : MonoBehaviour
         if (isSelected)
         {
             GameObject.FindGameObjectWithTag("player").GetComponent<handManager>().removeValue(value);
-            transform.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(-250, 250), Random.Range(100, 250), Random.Range(150, 350)));
-            transform.gameObject.GetComponent<Rigidbody>().AddTorque((new Vector3(Random.Range(-100f,200f), Random.Range(-100f, 200f),Random.Range(-100f, 200f))));
-            Invoke("returnToStart", 3.5f);
+            GameObject.FindGameObjectWithTag("player").GetComponent<playerStats>().setCanChange(false);
+            transform.gameObject.GetComponent<Rigidbody>().AddForce(0, Random.Range(50, 150), Random.Range(100, 250));
+            transform.gameObject.GetComponent<Rigidbody>().AddTorque(new Vector3(Random.Range(100, 350), Random.Range(100, 300), Random.Range(-300,300)));
+            Invoke("tryGetvalue", 3.5f);
         }   
     }
 
     private void returnToStart()
     {
         transform.position = stratPosition;
-        isSelected=false;
-        tryGetvalue();
+        isSelected = false;
+        if (value == 1 || value == 6)
+        {
+            float currentAngle = transform.eulerAngles.z;
+
+            float roundedAngle = Mathf.Round(currentAngle / 90) * 90;
+
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, roundedAngle);
+        }
+        else if (value == 4 || value == 3)
+        {
+            float currentAngle = transform.eulerAngles.y;
+
+            float roundedAngle = Mathf.Round(currentAngle / 90) * 90;
+
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, roundedAngle, transform.eulerAngles.z);
+        }
+        else if (value == 2 || value == 5)
+        {
+            float currentAngle = transform.eulerAngles.x;
+
+            float roundedAngle = Mathf.Round(currentAngle / 90) * 90;
+
+            transform.eulerAngles = new Vector3(roundedAngle, transform.eulerAngles.y, transform.eulerAngles.z);
+        }
     }
 
     private void tryGetvalue()
@@ -79,8 +96,9 @@ public class playerDice : MonoBehaviour
         }
         else
         {
-            value = findValue();
+            value = findValue(); 
             GameObject.FindGameObjectWithTag("player").GetComponent<handManager>().addValue(value);
+            returnToStart();
         }
     }
 
@@ -89,8 +107,6 @@ public class playerDice : MonoBehaviour
     public int findValue()
     {
         int value = -1;
-        Vector3 direction=gameObject.transform.eulerAngles;
-
         if(transform.GetComponent<Rigidbody>().angularVelocity == Vector3.zero)
         {
             List<Transform> sides = new List<Transform>();
@@ -98,7 +114,6 @@ public class playerDice : MonoBehaviour
             {
                 sides.Add(transform.Find(i.ToString()));
             }
-
             Transform goalSide = sides[0];
             for (int i = 1; i < 6; i++)
             {
@@ -109,9 +124,6 @@ public class playerDice : MonoBehaviour
             }
             value = goalSide.gameObject.GetComponent<diceValue>().getValue();
         } 
-
-       
-
         return value;
     }
 }
