@@ -58,21 +58,43 @@ public class enemyIntelect : MonoBehaviour
                 maxValue.Add(i);
             }
         }
-
-        foreach(GameObject dice in dices)
+        if (maxValue.Count < 5)
         {
-            int diceValue=dice.GetComponent<enemyDice>().getValue();
-            bool select = true;
-            foreach(int el in maxValue)
+            foreach (GameObject dice in dices)
             {
-                if (el == diceValue-1)
+                int diceValue = dice.GetComponent<enemyDice>().getValue();
+                bool select = true;
+                foreach (int el in maxValue)
+                {
+                    if (el == diceValue - 1)
+                    {
+                        select = false;
+                    }
+                }
+                if (select)
+                {
+                    dice.GetComponent<enemyDice>().Pick();
+                }
+            }
+        }
+        else
+        {
+            maxValue.Sort();
+            int max = maxValue[maxValue.Count - 1];
+            foreach (GameObject dice in dices)
+            {
+                int diceValue = dice.GetComponent<enemyDice>().getValue();
+                bool select = true;
+         
+                if (max == diceValue - 1)
                 {
                     select = false;
                 }
-            }
-            if (select)
-            {
-                dice.GetComponent<enemyDice>().Pick();
+                
+                if (select)
+                {
+                    dice.GetComponent<enemyDice>().Pick();
+                }
             }
         }
 
